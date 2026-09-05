@@ -1,0 +1,481 @@
+/* ────────────────────────────────────────────────────────────
+   토큰
+   Color   : 늦은 오후 카페 실내 — 로스팅한 원두 갈색 배경 + 우유 거품 크림 카드
+             + 황동/구리색 액션 + 세이지 그린 포인트
+   Type    : 헤드라인은 올드스타일 세리프(간판 느낌), 본문/버튼은 라운드 산세리프
+   Layout  : 세로 1열, 지점 카드가 쌓이는 구조 (한 손 모바일 플레이 전제)
+   ──────────────────────────────────────────────────────────── */
+:root {
+  --coffee-900: #2b1d14;
+  --coffee-800: #3a281b;
+  --coffee-700: #4a3423;
+  --cream-100: #f5e6d3;
+  --cream-050: #fbf3e7;
+  --copper-500: #c98a3d;
+  --copper-600: #ad722f;
+  --sage-500: #7a9b76;
+  --gold-400: #e8b94a;
+
+  --font-display: 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+  --font-body: 'Trebuchet MS', 'Segoe UI', system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--coffee-900);
+  color: var(--cream-100);
+  font-family: var(--font-body);
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+}
+
+button {
+  font-family: inherit;
+  border: none;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: default;
+}
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* ── TopBar ───────────────────────────────────────────────── */
+.topbar {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid rgba(245, 230, 211, 0.12);
+}
+
+.topbar__title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  letter-spacing: 0.3px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.topbar__logo {
+  font-size: 20px;
+}
+
+.topbar__stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.stat__value {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--gold-400);
+}
+
+.stat--money .stat__value {
+  color: var(--cream-050);
+}
+
+.stat__label {
+  font-size: 12px;
+  color: rgba(245, 230, 211, 0.6);
+  margin-left: 8px;
+}
+
+/* ── Shop floor ───────────────────────────────────────────── */
+.shop-floor {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.branch-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ── Branch card ──────────────────────────────────────────── */
+.branch-card {
+  background: var(--coffee-800);
+  border-radius: 16px;
+  padding: 14px;
+  border: 1px solid rgba(245, 230, 211, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.branch-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.branch-card__header h3 {
+  font-family: var(--font-display);
+  margin: 0;
+  font-size: 18px;
+}
+
+.branch-card__reputation {
+  font-size: 12px;
+  color: var(--sage-500);
+}
+
+.seat-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
+  padding: 8px;
+}
+
+.seat {
+  font-size: 16px;
+  opacity: 0.35;
+  transition: opacity 0.2s ease;
+}
+
+.seat--occupied {
+  opacity: 1;
+}
+
+.branch-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  font-size: 12px;
+  color: rgba(245, 230, 211, 0.7);
+}
+
+.upgrade-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.upgrade-btn {
+  background: rgba(245, 230, 211, 0.06);
+  color: rgba(245, 230, 211, 0.4);
+  border-radius: 10px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  text-align: left;
+}
+
+.upgrade-btn.is-affordable {
+  background: var(--copper-500);
+  color: var(--coffee-900);
+}
+
+.upgrade-btn__label {
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.upgrade-btn__sub {
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+.upgrade-btn__cost {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* ── Expand / action tray ─────────────────────────────────── */
+.expand-button {
+  background: var(--coffee-700);
+  color: rgba(245, 230, 211, 0.45);
+  border: 1px dashed rgba(245, 230, 211, 0.25);
+  border-radius: 14px;
+  padding: 14px;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.expand-button.is-affordable {
+  background: var(--sage-500);
+  color: var(--coffee-900);
+  border-style: solid;
+}
+
+.action-tray {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 2px;
+}
+
+.boost-button {
+  background: var(--sage-500);
+  color: var(--coffee-900);
+  font-weight: 700;
+  font-size: 14px;
+  padding: 14px;
+  border-radius: 14px;
+}
+
+.boost-button.is-active {
+  background: var(--gold-400);
+}
+
+.iap-row {
+  display: flex;
+  gap: 10px;
+}
+
+.iap-button {
+  flex: 1;
+  background: transparent;
+  border: 1px solid rgba(245, 230, 211, 0.25);
+  color: var(--cream-100);
+  padding: 10px;
+  border-radius: 12px;
+  font-size: 13px;
+}
+
+/* ── Modal ────────────────────────────────────────────────── */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.modal {
+  background: var(--cream-050);
+  color: var(--coffee-900);
+  border-radius: 18px;
+  padding: 28px 24px;
+  text-align: center;
+  max-width: 320px;
+}
+
+.modal__emoji {
+  font-size: 32px;
+}
+
+.modal h2 {
+  font-family: var(--font-display);
+  margin: 8px 0 4px;
+}
+
+.modal__note {
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+.modal__button {
+  margin-top: 14px;
+  background: var(--copper-500);
+  color: var(--coffee-900);
+  font-weight: 700;
+  padding: 10px 28px;
+  border-radius: 12px;
+}
+
+/* ── v3 추가분: 배너 여백, 평판 바, 플로팅 텍스트, 접기, 젬 상점 ── */
+
+.app-shell--banner-space {
+  padding-bottom: calc(env(safe-area-inset-bottom) + 50px); /* 네이티브 배너 광고 높이만큼 확보 */
+}
+
+.branch-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  background: none;
+  padding: 0;
+  color: inherit;
+  text-align: left;
+}
+
+.branch-card__header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.branch-card__mini-rate {
+  font-size: 12px;
+  color: var(--gold-400);
+}
+
+.branch-card__chevron {
+  font-size: 11px;
+  opacity: 0.5;
+}
+
+.branch-card--collapsed {
+  padding-bottom: 14px;
+}
+
+.reputation-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.reputation-row__label {
+  font-size: 11px;
+  color: rgba(245, 230, 211, 0.55);
+  flex-shrink: 0;
+}
+
+.reputation-bar {
+  flex: 1;
+  height: 6px;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.reputation-bar__fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+
+.rep--good {
+  background: var(--sage-500);
+}
+
+.rep--mid {
+  background: var(--gold-400);
+}
+
+.rep--bad {
+  background: #c9573d;
+}
+
+.reputation-row__value {
+  font-size: 11px;
+  color: rgba(245, 230, 211, 0.7);
+  flex-shrink: 0;
+  width: 24px;
+  text-align: right;
+}
+
+.seat-row-wrap {
+  position: relative;
+}
+
+.float-text {
+  position: absolute;
+  top: -4px;
+  right: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gold-400);
+  animation: float-up 1.1s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes float-up {
+  0% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-22px);
+  }
+}
+
+.gem-shop {
+  background: var(--coffee-800);
+  border-radius: 14px;
+  padding: 12px;
+  border: 1px solid rgba(232, 185, 74, 0.2);
+}
+
+.gem-shop__title {
+  margin: 0 0 8px;
+  font-size: 13px;
+  color: var(--gold-400);
+}
+
+.gem-shop__row {
+  display: flex;
+  gap: 8px;
+}
+
+.gem-btn {
+  flex: 1;
+  background: rgba(232, 185, 74, 0.12);
+  color: var(--cream-100);
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.gem-btn:disabled {
+  opacity: 0.4;
+}
+
+.gem-btn.is-active {
+  background: var(--gold-400);
+  color: var(--coffee-900);
+  font-weight: 700;
+}
+
+.gem-btn__cost {
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+.restore-link {
+  background: none;
+  color: rgba(245, 230, 211, 0.45);
+  font-size: 11px;
+  text-decoration: underline;
+  padding: 4px;
+  align-self: center;
+}
+
+.restore-msg {
+  text-align: center;
+  font-size: 11px;
+  color: var(--sage-500);
+  margin: 0;
+}
