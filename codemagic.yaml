@@ -19,10 +19,20 @@ workflows:
         script: npx cap sync android
       - name: Patch AndroidManifest for AdMob test ID
         script: |
-          MANIFEST=android/app/src/main/AndroidManifest.xml
-          if ! grep -q "APPLICATION_ID" "$MANIFEST"; then
-            sed -i '0,/<activity/{s|<activity|    <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-3940256099942544~3347511713"/>\n    <activity|}' "$MANIFEST"
-          fi
+          python3 - << 'PY'
+          import re
+          path = "android/app/src/main/AndroidManifest.xml"
+          with open(path) as f:
+              content = f.read()
+          if "APPLICATION_ID" not in content:
+              meta = '<meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-3940256099942544~3347511713"/>'
+              content = re.sub(r'(<application[^>]*>)', r'\1\n    ' + meta, content, count=1)
+              with open(path, "w") as f:
+                  f.write(content)
+              print("Inserted AdMob APPLICATION_ID meta-data")
+          else:
+              print("APPLICATION_ID already present, skipping")
+          PY
       - name: Build debug APK
         script: |
           cd android
