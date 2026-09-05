@@ -17,6 +17,12 @@ workflows:
           fi
       - name: Sync Capacitor
         script: npx cap sync android
+      - name: Patch AndroidManifest for AdMob test ID
+        script: |
+          MANIFEST=android/app/src/main/AndroidManifest.xml
+          if ! grep -q "APPLICATION_ID" "$MANIFEST"; then
+            sed -i '0,/<activity/{s|<activity|    <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-3940256099942544~3347511713"/>\n    <activity|}' "$MANIFEST"
+          fi
       - name: Build debug APK
         script: |
           cd android
