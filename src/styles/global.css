@@ -752,3 +752,98 @@ button:disabled {
     transform: scale(1) translateY(0);
   }
 }
+
+/* ── v7 추가분: 구역 클릭형 UI, 공사 중 배너 ── */
+
+.branch-card__type {
+  font-size: 11px;
+  font-weight: 400;
+  opacity: 0.6;
+}
+
+.expand-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.expand-button__sub {
+  font-size: 10px;
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+.branch-card--building {
+  opacity: 0.85;
+}
+
+.building-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(232, 185, 74, 0.1);
+  border: 1px dashed rgba(232, 185, 74, 0.35);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: var(--gold-400);
+}
+
+.building-banner__icon {
+  font-size: 18px;
+  animation: gift-pulse 1.6s ease-in-out infinite;
+}
+
+.zone-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.zone-btn {
+  background: rgba(245, 230, 211, 0.06);
+  border: 1px solid rgba(245, 230, 211, 0.1);
+  border-radius: 12px;
+  padding: 10px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  color: var(--cream-100);
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.zone-btn:active {
+  transform: scale(0.95);
+  background: rgba(232, 185, 74, 0.15);
+}
+
+.zone-btn__icon {
+  font-size: 20px;
+}
+
+.zone-btn__label {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.zone-btn__sub {
+  font-size: 10px;
+  opacity: 0.6;
+}
+
+.modal--zone__body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.modal--zone .upgrade-btn {
+  background: rgba(58, 40, 27, 0.08);
+}
+
+.modal--zone .upgrade-btn.is-affordable {
+  background: var(--copper-500);
+}
