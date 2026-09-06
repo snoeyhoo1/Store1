@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useGameStore, branchOrdinal, businessTypeOf } from '../store/gameStore';
 import { formatNumber } from '../utils/format';
-import './StoreWorld.css';
+import './styles/StoreWorld.css';
 
 type Point = { x: number; y: number };
 
