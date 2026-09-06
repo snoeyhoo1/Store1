@@ -1,0 +1,1768 @@
+/* ============================================================
+   STORE1 GAME UI
+   기존 게임 로직/돈 단위는 건드리지 않고
+   화면만 모바일 2D 타이쿤 게임형으로 전환
+============================================================ */
+
+:root {
+  --game-ink: #172238;
+  --game-blue: #249eea;
+  --game-blue-dark: #176fc1;
+  --game-cyan: #47d5ff;
+  --game-purple: #7b52f4;
+  --game-pink: #f45ab0;
+  --game-green: #27d98b;
+  --game-gold: #ffd34d;
+  --game-orange: #ff9b45;
+  --game-white: #fffdf8;
+  --game-panel: rgba(16, 31, 57, .94);
+  --game-panel-2: rgba(28, 49, 82, .94);
+}
+
+body {
+  background:
+    radial-gradient(
+      circle at 50% -10%,
+      #75d9ff 0,
+      #d8f2ff 25%,
+      transparent 52%
+    ),
+    linear-gradient(
+      180deg,
+      #bdeaff 0 26%,
+      #8fc8a3 26% 52%,
+      #5d8c6a 52% 100%
+    );
+}
+
+.app-shell {
+  max-width: 540px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(255,255,255,.08),
+      transparent 30%
+    ),
+    #7fae7c;
+
+  box-shadow:
+    0 0 50px
+      rgba(0,0,0,.22);
+}
+
+.topbar {
+  position: relative;
+
+  padding:
+    calc(
+      8px +
+      env(safe-area-inset-top)
+    )
+    10px
+    9px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #172b49,
+      #0e1d35
+    );
+
+  border: 0;
+
+  box-shadow:
+    0 5px 16px
+      rgba(0,0,0,.25);
+
+  z-index: 50;
+}
+
+/* ============================================================
+   TOP GAME HUD
+============================================================ */
+
+.topbar__game-row {
+  display: grid;
+
+  grid-template-columns:
+    1.15fr
+    1.55fr
+    .9fr;
+
+  gap: 6px;
+
+  align-items: center;
+}
+
+.topbar__level,
+.topbar__currency {
+  min-width: 0;
+  min-height: 48px;
+
+  border:
+    2px solid
+    rgba(255,255,255,.14);
+
+  border-radius: 13px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #263b61,
+      #142642
+    );
+
+  box-shadow:
+    inset 0 1px
+      rgba(255,255,255,.14),
+    0 4px 9px
+      rgba(0,0,0,.2);
+}
+
+.topbar__level {
+  display: flex;
+
+  align-items: center;
+
+  gap: 5px;
+
+  padding:
+    4px
+    7px
+    4px
+    3px;
+}
+
+.topbar__level-star {
+  width: 37px;
+  height: 37px;
+
+  display: grid;
+
+  place-items: center;
+
+  flex: 0 0 37px;
+
+  border-radius: 12px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #ff86df,
+      #8057f8
+    );
+
+  color: #fff;
+
+  font-size: 23px;
+
+  text-shadow:
+    0 2px 2px
+      rgba(0,0,0,.3);
+
+  transform:
+    rotate(-5deg);
+}
+
+.topbar__level-body {
+  min-width: 0;
+
+  flex: 1;
+}
+
+.topbar__level-line {
+  display: flex;
+
+  justify-content:
+    space-between;
+
+  gap: 4px;
+
+  color: #fff;
+
+  font-size: 8px;
+
+  white-space: nowrap;
+}
+
+.topbar__level-line strong {
+  font-size: 11px;
+}
+
+.topbar__level-line span {
+  opacity: .7;
+}
+
+.topbar__level-track {
+  height: 7px;
+
+  margin-top: 4px;
+
+  overflow: hidden;
+
+  border-radius: 999px;
+
+  background: #0a1730;
+}
+
+.topbar__level-track span {
+  display: block;
+
+  height: 100%;
+
+  border-radius: inherit;
+
+  background:
+    linear-gradient(
+      90deg,
+      #b8f5ff,
+      #38baf4
+    );
+
+  box-shadow:
+    0 0 7px
+      rgba(72,211,255,.55);
+}
+
+/* ============================================================
+   CURRENCY
+============================================================ */
+
+.topbar__currency {
+  display: flex;
+
+  align-items: center;
+
+  gap: 4px;
+
+  padding:
+    5px
+    5px
+    5px
+    7px;
+}
+
+.topbar__currency--cash {
+  background:
+    linear-gradient(
+      180deg,
+      #0f3d3b,
+      #12302f
+    );
+}
+
+.topbar__currency--gem {
+  background:
+    linear-gradient(
+      180deg,
+      #263d76,
+      #202650
+    );
+}
+
+.currency-icon {
+  width: 28px;
+  height: 28px;
+
+  display: grid;
+
+  place-items: center;
+
+  flex: 0 0 28px;
+
+  border-radius: 9px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #2ee39c,
+      #0cae76
+    );
+
+  color: #eafff7;
+
+  font-size: 15px;
+}
+
+.topbar__currency--gem
+.currency-icon {
+  background:
+    linear-gradient(
+      145deg,
+      #70d8ff,
+      #6c55ef
+    );
+}
+
+.topbar__currency strong {
+  min-width: 0;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  color: #fff;
+
+  font-size: 15px;
+
+  font-weight: 900;
+}
+
+.topbar__currency small {
+  display: block;
+
+  margin-top: 1px;
+
+  color: #8df2c7;
+
+  font-size: 7px;
+
+  font-weight: 800;
+}
+
+.currency-plus {
+  width: 24px;
+  height: 24px;
+
+  flex: 0 0 24px;
+
+  border-radius: 8px;
+
+  background: #24d88e;
+
+  color: #fff;
+
+  font-size: 19px;
+
+  font-weight: 900;
+
+  line-height: 1;
+}
+
+/* ============================================================
+   STORE HEADER
+============================================================ */
+
+.topbar__store-row {
+  display: flex;
+
+  align-items: center;
+
+  justify-content:
+    space-between;
+
+  margin-top: 7px;
+}
+
+.topbar__store-title {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  color: #fff;
+}
+
+.topbar__store-icon {
+  width: 38px;
+  height: 38px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 11px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #ffbd50,
+      #f27645
+    );
+
+  border:
+    2px solid
+    rgba(255,255,255,.4);
+
+  font-size: 21px;
+}
+
+.topbar__store-title span {
+  display: block;
+
+  color: #86dfff;
+
+  font-size: 8px;
+
+  font-weight: 900;
+
+  letter-spacing: 1px;
+}
+
+.topbar__store-title strong {
+  display: block;
+
+  margin-top: 1px;
+
+  font-size: 16px;
+}
+
+.topbar__quick-actions {
+  display: flex;
+
+  gap: 6px;
+}
+
+.topbar__quick-actions button {
+  width: 37px;
+  height: 37px;
+
+  border-radius: 11px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #f9fcff,
+      #cbd9e8
+    );
+
+  color: #30496d;
+
+  font-size: 19px;
+
+  box-shadow:
+    0 3px 7px
+      rgba(0,0,0,.25);
+}
+
+/* ============================================================
+   MAIN
+============================================================ */
+
+.shop-floor {
+  position: relative;
+
+  padding:
+    9px
+    9px
+    calc(
+      100px +
+      env(safe-area-inset-bottom)
+    );
+
+  gap: 9px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(68,111,83,.15),
+      rgba(34,73,57,.3)
+    ),
+    #7fae7c;
+}
+
+.game-panel,
+.chapter-hud,
+.next-chapter,
+.mission-strip,
+.game-tip {
+  border:
+    2px solid
+    rgba(255,255,255,.58);
+
+  border-radius: 16px;
+
+  box-shadow:
+    0 6px 14px
+      rgba(18,45,40,.2);
+}
+
+/* ============================================================
+   CHAPTER
+============================================================ */
+
+.chapter-hud {
+  padding:
+    10px
+    11px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(29,67,108,.98),
+      rgba(17,39,72,.98)
+    );
+
+  color: #fff;
+}
+
+.chapter-hud__main {
+  gap: 8px;
+}
+
+.chapter-hud__eyebrow {
+  color: #70e0ff;
+
+  font-size: 8px;
+
+  font-weight: 900;
+
+  letter-spacing: 1.4px;
+}
+
+.chapter-hud h1 {
+  margin:
+    1px
+    0;
+
+  font-size: 19px;
+
+  text-shadow:
+    0 2px 2px
+      rgba(0,0,0,.25);
+}
+
+.chapter-hud p {
+  color: #b8cee5;
+
+  font-size: 9px;
+}
+
+.level-bar {
+  margin-top: 8px;
+}
+
+.level-bar__badge {
+  padding:
+    4px
+    8px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffdd69,
+      #ff9e32
+    );
+
+  color: #5b3610;
+
+  border:
+    2px solid
+    rgba(255,255,255,.35);
+}
+
+/* ============================================================
+   MISSIONS
+============================================================ */
+
+.mission-strip
+.mission-banner,
+.mission-strip > * {
+  margin: 0;
+}
+
+.mission-strip {
+  overflow: hidden;
+
+  background:
+    rgba(15,39,68,.92);
+}
+
+.mission-banner {
+  border: 0 !important;
+
+  border-radius:
+    14px !important;
+
+  background:
+    transparent !important;
+
+  box-shadow:
+    none !important;
+}
+
+/* ============================================================
+   STORE SCENE
+============================================================ */
+
+.active-store {
+  position: relative;
+}
+
+.game-scene {
+  border:
+    2px solid
+    rgba(255,255,255,.72);
+
+  border-radius: 19px;
+
+  background: #d9eef8;
+
+  box-shadow:
+    0 9px 20px
+      rgba(25,62,55,.28);
+}
+
+.scene-header {
+  padding:
+    10px
+    11px
+    8px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #eefaff,
+      #cce7f1
+    );
+
+  color: #1d2d45;
+}
+
+.scene-header__eyebrow {
+  color: #5480a2;
+
+  font-size: 7px;
+}
+
+.scene-header h2 {
+  font-size: 18px;
+}
+
+.scene-header p {
+  color: #668096;
+
+  font-size: 9px;
+}
+
+.scene-status {
+  border:
+    2px solid
+    rgba(255,255,255,.75);
+
+  background: #e8fff1;
+
+  color: #16885b;
+}
+
+/* ============================================================
+   ACTUAL GAME ROOM
+============================================================ */
+
+.store-room {
+  height: 390px;
+
+  border: 0;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.55),
+      transparent 35%
+    ),
+    linear-gradient(
+      180deg,
+      #b9e4e9 0 33%,
+      #eecb9e 33% 100%
+    );
+}
+
+.store-room__wall {
+  height: 33%;
+
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(57,95,105,.12)
+        0 2px,
+      transparent
+        2px 56px
+    ),
+    linear-gradient(
+      180deg,
+      #a9dce4,
+      #d7eef0
+    );
+}
+
+.store-room::after {
+  top: 33%;
+
+  bottom: -30px;
+
+  background:
+    linear-gradient(
+      30deg,
+      transparent 47%,
+      rgba(150,104,67,.18)
+        48% 50%,
+      transparent 51%
+    ),
+    linear-gradient(
+      -30deg,
+      transparent 47%,
+      rgba(150,104,67,.14)
+        48% 50%,
+      transparent 51%
+    ),
+    linear-gradient(
+      90deg,
+      rgba(115,79,52,.12)
+        1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      rgba(115,79,52,.1)
+        1px,
+      transparent 1px
+    ),
+    #e7bd87;
+
+  background-size:
+    55px 55px,
+    55px 55px,
+    28px 28px,
+    28px 28px,
+    auto;
+
+  transform:
+    perspective(600px)
+    rotateX(8deg)
+    scale(1.12);
+}
+
+/* ============================================================
+   STORE SIGN
+============================================================ */
+
+.store-room__sign {
+  left: 50%;
+
+  top: 20px;
+
+  transform:
+    translateX(-50%);
+
+  padding:
+    6px
+    14px;
+
+  border:
+    3px solid
+    #8a522e;
+
+  border-radius: 9px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #fff4ce,
+      #ffc96b
+    );
+
+  color: #6b3e25;
+
+  box-shadow:
+    0 4px 0
+      #8a522e,
+    0 8px 10px
+      rgba(0,0,0,.18);
+}
+
+.store-room__sign strong {
+  font-size: 12px;
+}
+
+.store-room__sign small {
+  font-size: 7px;
+
+  color: #a66542;
+}
+
+/* ============================================================
+   WINDOW
+============================================================ */
+
+.store-window {
+  left: 10px;
+  top: 18px;
+
+  width: 88px;
+  height: 74px;
+
+  border:
+    7px solid
+    #8e5a3d;
+
+  border-radius: 7px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #b7e8ff,
+      #5eb1d9
+    );
+
+  box-shadow:
+    inset 0 0 0 3px
+      #e8c59d,
+    0 3px 7px
+      rgba(0,0,0,.2);
+}
+
+.window-light {
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,.65),
+      transparent 50%
+    );
+}
+
+/* ============================================================
+   DECORATIONS
+============================================================ */
+
+.room-decoration {
+  filter:
+    drop-shadow(
+      0 5px 2px
+      rgba(0,0,0,.2)
+    );
+}
+
+.room-decoration--plant {
+  right: 11px;
+  top: 55px;
+
+  font-size: 39px;
+}
+
+.room-decoration--lamp {
+  right: 95px;
+  top: 20px;
+
+  font-size: 24px;
+}
+
+/* ============================================================
+   COUNTER
+============================================================ */
+
+.room-counter {
+  left: 18px;
+  bottom: 68px;
+
+  width: 125px;
+  height: 88px;
+
+  padding: 0;
+
+  transform:
+    skewY(-3deg);
+
+  border:
+    3px solid
+    #70472c;
+
+  border-radius: 9px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #d99a54 0 30%,
+      #9c5c32 30% 100%
+    );
+
+  box-shadow:
+    0 7px 0
+      #714027,
+    0 10px 12px
+      rgba(0,0,0,.2);
+
+  z-index: 8;
+}
+
+.room-counter__top {
+  display: grid;
+
+  place-items: center;
+
+  position: absolute;
+
+  left: 8px;
+  right: 8px;
+  top: -12px;
+
+  height: 30px;
+
+  border-radius: 8px;
+
+  background: #fff0c8;
+
+  border:
+    3px solid
+    #8d5b35;
+
+  font-size: 18px;
+}
+
+.room-counter__body {
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  bottom: 22px;
+
+  color: #fff;
+
+  font-size: 8px;
+
+  font-weight: 900;
+
+  letter-spacing: 1px;
+}
+
+.room-counter__staff {
+  position: absolute;
+
+  right: 5px;
+  bottom: 4px;
+
+  color: #ffe8a8;
+
+  font-size: 8px;
+}
+
+/* ============================================================
+   TABLES
+============================================================ */
+
+.room-tables {
+  position: absolute;
+
+  left: 135px;
+  right: 12px;
+  bottom: 47px;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
+  gap:
+    10px 8px;
+
+  z-index: 7;
+}
+
+.room-table {
+  position: relative;
+
+  height: 65px;
+
+  padding: 0;
+
+  background: transparent;
+}
+
+.room-table__surface {
+  position: absolute;
+
+  left: 18%;
+  right: 18%;
+  top: 20px;
+
+  height: 27px;
+
+  border:
+    3px solid
+    #87562f;
+
+  border-radius: 50%;
+
+  background:
+    linear-gradient(
+      180deg,
+      #ffd48a,
+      #c98245
+    );
+
+  box-shadow:
+    0 5px 0
+      #774729,
+    0 6px 8px
+      rgba(0,0,0,.16);
+}
+
+.room-table__emoji {
+  position: relative;
+
+  top: 3px;
+
+  font-size: 14px;
+}
+
+.room-table__customer {
+  position: absolute;
+
+  left: 50%;
+  top: -3px;
+
+  transform:
+    translateX(-50%);
+}
+
+.room-table__empty {
+  position: absolute;
+
+  left: 50%;
+  bottom: 0;
+
+  transform:
+    translateX(-50%);
+
+  font-size: 16px;
+
+  opacity: .85;
+}
+
+.room-table--busy
+.room-table__surface {
+  filter:
+    brightness(1.06);
+}
+
+/* ============================================================
+   CUSTOMERS
+============================================================ */
+
+.room-customers {
+  left: 13px;
+  right: 12px;
+  bottom: 12px;
+
+  height: 50px;
+
+  z-index: 12;
+}
+
+.walking-customer {
+  animation:
+    customer-walk
+    2.2s
+    ease-in-out
+    infinite
+    alternate;
+}
+
+.walking-customer:nth-child(2) {
+  animation-delay: -.7s;
+}
+
+.walking-customer:nth-child(3) {
+  animation-delay: -.3s;
+}
+
+@keyframes customer-walk {
+  from {
+    transform:
+      translateY(2px);
+  }
+
+  to {
+    transform:
+      translateY(-4px);
+  }
+}
+
+/* ============================================================
+   DOOR / LABEL
+============================================================ */
+
+.store-door {
+  right: 13px;
+  bottom: 5px;
+
+  padding:
+    3px
+    6px;
+
+  border-radius: 7px;
+
+  background:
+    rgba(37,59,79,.85);
+
+  color: #fff;
+
+  font-weight: 800;
+}
+
+.room-floor-label {
+  right: 9px;
+  top: 143px;
+
+  padding:
+    5px
+    8px;
+
+  border:
+    2px solid
+    #fff;
+
+  border-radius: 9px;
+
+  background: #193655;
+
+  color: #fff;
+
+  font-size: 9px;
+
+  font-weight: 900;
+
+  box-shadow:
+    0 3px 5px
+      rgba(0,0,0,.18);
+
+  z-index: 15;
+}
+
+/* ============================================================
+   FLOATING MONEY
+============================================================ */
+
+.money-float {
+  padding:
+    5px
+    8px;
+
+  border-radius: 999px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #8ff8c6,
+      #23c77e
+    );
+
+  border:
+    2px solid
+    #fff;
+
+  color: #084b35;
+
+  font-size: 12px;
+
+  font-weight: 900;
+
+  box-shadow:
+    0 4px 8px
+      rgba(0,0,0,.18);
+}
+
+/* ============================================================
+   STATS
+============================================================ */
+
+.scene-stats {
+  padding: 9px;
+
+  background: #f4fbff;
+}
+
+.scene-stat {
+  padding:
+    7px
+    8px;
+
+  border-radius: 10px;
+
+  background: #e4f0f7;
+}
+
+.scene-stat span,
+.scene-stat small {
+  color: #668096;
+}
+
+.scene-stat strong,
+.scene-stat-grid strong {
+  color: #20314b;
+}
+
+.rep-track {
+  height: 8px;
+
+  background: #c5d6e0;
+}
+
+.rep-fill {
+  background:
+    linear-gradient(
+      90deg,
+      #4bd9a0,
+      #25aef1
+    ) !important;
+}
+
+.scene-stat-grid {
+  gap: 6px;
+
+  margin-top: 7px;
+}
+
+.scene-stat-grid > div {
+  border:
+    2px solid
+    #d5e5ee;
+
+  border-radius: 10px;
+
+  background: #fff;
+}
+
+/* ============================================================
+   ZONE BUTTONS
+============================================================ */
+
+.scene-zone-grid {
+  padding: 9px;
+
+  background: #edf7fb;
+
+  gap: 6px;
+}
+
+.scene-zone {
+  min-height: 53px;
+
+  border:
+    2px solid
+    #c7dbe6;
+
+  border-radius: 12px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #fff,
+      #e5f2f8
+    );
+
+  color: #223652;
+
+  box-shadow:
+    0 3px 0
+      #c3d6df;
+}
+
+.scene-zone__icon {
+  width: 32px;
+  height: 32px;
+
+  display: grid;
+
+  place-items: center;
+
+  border-radius: 9px;
+
+  background: #d8efff;
+}
+
+/* ============================================================
+   NEXT CHAPTER
+============================================================ */
+
+.next-chapter {
+  padding: 11px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #173b64,
+      #102b4c
+    );
+
+  color: #fff;
+}
+
+.next-chapter__header span {
+  color: #76dfff;
+
+  font-size: 7px;
+
+  font-weight: 900;
+
+  letter-spacing: 1.3px;
+}
+
+.next-chapter__header h2 {
+  margin-top: 2px;
+
+  font-size: 16px;
+}
+
+.next-chapter__header strong {
+  padding:
+    6px
+    8px;
+
+  border-radius: 9px;
+
+  background:
+    rgba(0,0,0,.2);
+
+  color: #ffd966;
+
+  font-size: 13px;
+}
+
+/* ============================================================
+   PROGRESS
+============================================================ */
+
+.chapter-progress__track {
+  height: 13px;
+
+  border:
+    2px solid
+    rgba(255,255,255,.2);
+
+  background: #091d35;
+}
+
+.chapter-progress__fill {
+  background:
+    linear-gradient(
+      90deg,
+      #32b9ff,
+      #2de19b,
+      #ffe052
+    );
+
+  box-shadow:
+    0 0 8px
+      rgba(45,225,155,.4);
+}
+
+.chapter-progress__labels {
+  color: #bcd2e7;
+
+  font-size: 8px;
+}
+
+.next-chapter__remaining {
+  color: #cbd8e8;
+
+  font-size: 9px;
+}
+
+.next-chapter__remaining b {
+  color: #ffe16b;
+}
+
+.next-chapter__ready {
+  color: #82f6c5;
+
+  font-weight: 900;
+
+  font-size: 10px;
+}
+
+/* ============================================================
+   NEXT CHAPTER BUTTON
+============================================================ */
+
+.next-chapter__button {
+  min-height: 49px;
+
+  border-radius: 13px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #3b536f,
+      #293d57
+    );
+
+  border:
+    2px solid
+    rgba(255,255,255,.18);
+
+  color: #b8c9d9;
+
+  box-shadow:
+    0 4px 0
+      #18283d;
+
+  font-weight: 900;
+}
+
+.next-chapter__button.is-ready {
+  background:
+    linear-gradient(
+      180deg,
+      #36e79a,
+      #16b879
+    );
+
+  border-color: #b8ffe2;
+
+  color: #073e2a;
+
+  box-shadow:
+    0 4px 0
+      #087a50,
+    0 0 15px
+      rgba(54,231,154,.22);
+}
+
+.next-chapter__note {
+  margin-top: 7px;
+
+  padding: 7px;
+
+  border-radius: 8px;
+
+  background:
+    rgba(255,255,255,.06);
+
+  color: #9eb4c9;
+
+  font-size: 8px;
+
+  line-height: 1.45;
+}
+
+.next-chapter__note b {
+  color: #ffd966;
+}
+
+/* ============================================================
+   SHOPS
+============================================================ */
+
+.power-section {
+  display: grid;
+
+  gap: 8px;
+}
+
+.gem-shop,
+.decoration-shop,
+.action-tray {
+  border:
+    2px solid
+    rgba(255,255,255,.65);
+
+  border-radius: 15px;
+
+  background:
+    rgba(17,43,68,.95);
+
+  box-shadow:
+    0 6px 13px
+      rgba(20,50,55,.18);
+
+  overflow: hidden;
+}
+
+.gem-shop__header,
+.decoration-shop__header {
+  color: #fff;
+}
+
+.gem-shop button,
+.decoration-shop button,
+.action-tray button {
+  border-radius: 10px;
+}
+
+/* ============================================================
+   BOOST
+============================================================ */
+
+.boost-button {
+  min-height: 54px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #38e89b,
+      #10b777
+    );
+
+  color: #073e2a;
+
+  font-size: 15px;
+
+  font-weight: 950;
+
+  box-shadow:
+    0 4px 0
+      #087b51;
+}
+
+.boost-button.is-active {
+  background:
+    linear-gradient(
+      180deg,
+      #ffe875,
+      #ffb83e
+    );
+
+  color: #573700;
+}
+
+/* ============================================================
+   IAP
+============================================================ */
+
+.iap-button {
+  min-height: 43px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #fff,
+      #d9eff9
+    );
+
+  color: #203a59;
+
+  font-weight: 900;
+}
+
+.restore-link {
+  color: #a8d7ef;
+}
+
+/* ============================================================
+   TIP
+============================================================ */
+
+.game-tip {
+  display: flex;
+
+  gap: 8px;
+
+  padding: 9px;
+
+  background:
+    rgba(242,249,255,.95);
+
+  color: #28415c;
+}
+
+.game-tip > span {
+  font-size: 22px;
+}
+
+.game-tip strong {
+  font-size: 11px;
+}
+
+.game-tip p {
+  margin:
+    2px
+    0
+    0;
+
+  color: #6b8094;
+
+  font-size: 8px;
+
+  line-height: 1.5;
+}
+
+/* ============================================================
+   BOTTOM GAME NAV
+============================================================ */
+
+.game-bottom-nav {
+  position: sticky;
+
+  bottom: 7px;
+
+  z-index: 40;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(5, 1fr);
+
+  gap: 5px;
+
+  padding: 6px;
+
+  margin-top: 2px;
+
+  border:
+    2px solid
+    rgba(255,255,255,.65);
+
+  border-radius: 17px;
+
+  background:
+    rgba(15,31,54,.96);
+
+  box-shadow:
+    0 8px 18px
+      rgba(0,0,0,.3);
+
+  backdrop-filter:
+    blur(12px);
+}
+
+.game-bottom-nav button {
+  min-height: 54px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 2px;
+
+  border-radius: 12px;
+
+  background:
+    linear-gradient(
+      180deg,
+      #2b4a70,
+      #1a3354
+    );
+
+  color: #fff;
+
+  box-shadow:
+    inset 0 1px
+      rgba(255,255,255,.12);
+}
+
+.game-bottom-nav span {
+  font-size: 20px;
+
+  line-height: 1;
+}
+
+.game-bottom-nav b {
+  font-size: 8px;
+}
+
+/* ============================================================
+   CENTER BOOST BUTTON
+============================================================ */
+
+.game-bottom-nav__boost {
+  margin-top: -18px;
+
+  min-height:
+    70px !important;
+
+  border:
+    3px solid
+    #b8ffe3 !important;
+
+  border-radius:
+    18px !important;
+
+  background:
+    linear-gradient(
+      180deg,
+      #38e89b,
+      #12b879
+    ) !important;
+
+  color:
+    #073e2a !important;
+
+  box-shadow:
+    0 5px 0
+      #087b51,
+    0 7px 14px
+      rgba(0,0,0,.2) !important;
+}
+
+.game-bottom-nav__boost span {
+  font-size: 23px;
+
+  font-weight: 1000;
+}
+
+.game-bottom-nav__boost b {
+  font-size: 9px;
+}
+
+/* ============================================================
+   TOUCH
+============================================================ */
+
+button {
+  -webkit-touch-callout: none;
+
+  user-select: none;
+}
+
+.game-bottom-nav button:active,
+.scene-zone:active,
+.room-table:active,
+.room-counter:active,
+.next-chapter__button:active,
+.boost-button:active {
+  transform:
+    translateY(2px)
+    scale(.985);
+}
+
+/* ============================================================
+   SMALL PHONES
+============================================================ */
+
+@media (max-width: 390px) {
+  .topbar__game-row {
+    grid-template-columns:
+      1fr
+      1.35fr
+      .72fr;
+  }
+
+  .topbar__currency strong {
+    font-size: 12px;
+  }
+
+  .store-room {
+    height: 360px;
+  }
+
+  .room-tables {
+    left: 126px;
+
+    gap: 7px;
+  }
+
+  .game-bottom-nav b {
+    font-size: 7px;
+  }
+}
+
+/* ============================================================
+   DESKTOP / TABLET PREVIEW
+============================================================ */
+
+@media (min-width: 541px) {
+  .app-shell {
+    border-left:
+      1px solid
+      rgba(255,255,255,.2);
+
+    border-right:
+      1px solid
+      rgba(255,255,255,.2);
+  }
+}
