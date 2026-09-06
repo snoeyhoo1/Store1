@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Branch, branchOrdinal, useGameStore } from '../store/gameStore';
 import { formatBranchMoney } from '../utils/format';
+import CustomerFigure from './CustomerFigure';
+import ChairIcon from './ChairIcon';
 
 function UpgradeButton({
   label,
@@ -53,7 +55,9 @@ export default function BranchCard({ branch, defaultExpanded }: { branch: Branch
 
   const [expanded, setExpanded] = useState(defaultExpanded);
   const [floats, setFloats] = useState<{ id: number; amount: number }[]>([]);
+  const [justArrivedIdx, setJustArrivedIdx] = useState<number | null>(null);
   const prevServedRef = useRef(branch.totalServed);
+  const prevQueueRef = useRef(branch.queueCount);
 
   const ordinal = branchOrdinal(branch);
   const profitPerCustomer = Math.round(price * (1 - costRatio));
@@ -69,6 +73,18 @@ export default function BranchCard({ branch, defaultExpanded }: { branch: Branch
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [branch.totalServed]);
+
+  // 좌석이 늘어난 순간(새 손님 도착)을 감지해서 그 자리에 팝인 애니메이션을 잠깐 건다
+  useEffect(() => {
+    if (branch.queueCount > prevQueueRef.current) {
+      const idx = branch.queueCount - 1;
+      setJustArrivedIdx(idx);
+      const timer = setTimeout(() => setJustArrivedIdx((cur) => (cur === idx ? null : cur)), 500);
+      prevQueueRef.current = branch.queueCount;
+      return () => clearTimeout(timer);
+    }
+    prevQueueRef.current = branch.queueCount;
+  }, [branch.queueCount]);
 
   const seats = Array.from({ length: branch.tables }, (_, i) => i < branch.queueCount);
 
@@ -99,8 +115,8 @@ export default function BranchCard({ branch, defaultExpanded }: { branch: Branch
           <div className="seat-row-wrap">
             <div className="seat-row" aria-label={`좌석 ${branch.queueCount}/${branch.tables}`}>
               {seats.map((occupied, i) => (
-                <span key={i} className={`seat ${occupied ? 'seat--occupied' : ''}`}>
-                  {occupied ? '🧑' : '🪑'}
+                <span key={i} className={`seat ${occupied ? 'seat--occupied' : ''} ${i === justArrivedIdx ? 'seat--pop' : ''}`}>
+                  {occupied ? <CustomerFigure variant={i} /> : <ChairIcon />}
                 </span>
               ))}
             </div>
