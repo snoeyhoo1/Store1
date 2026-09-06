@@ -5,6 +5,8 @@ import { purchase, restorePurchases, PRODUCTS } from '../services/iap';
 import { formatNumber } from '../utils/format';
 import BranchCard from './BranchCard';
 import GemShop from './GemShop';
+import MissionBanner from './MissionBanner';
+import DecorationShop from './DecorationShop';
 
 const BOOST_DURATION_MS = 10 * 60 * 1000;
 
@@ -37,8 +39,6 @@ export default function ShopFloor() {
     setBusy(true);
     const ok = openNewBranch();
     if (ok) {
-      // 화면이 바뀌는 타이밍 = 전면광고를 넣기 자연스러운 지점.
-      // 최소 노출 간격은 ads.ts에서 알아서 걸러줌.
       await showInterstitialIfReady();
     }
     setBusy(false);
@@ -76,6 +76,8 @@ export default function ShopFloor() {
 
   return (
     <main className="shop-floor">
+      <MissionBanner />
+
       <section className="branch-list">
         {branches.map((b, i) => (
           <BranchCard key={b.id} branch={b} defaultExpanded={i === branches.length - 1} />
@@ -87,6 +89,7 @@ export default function ShopFloor() {
       </button>
 
       <GemShop />
+      <DecorationShop />
 
       <section className="action-tray">
         <button className={`boost-button ${boosting ? 'is-active' : ''}`} onClick={handleWatchAd} disabled={busy}>
